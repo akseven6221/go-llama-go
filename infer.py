@@ -54,6 +54,11 @@ if __name__ == "__main__":
 
     tokenizer = AutoTokenizer.from_pretrained(model_path)
 
+    # --- 修复 ValueError: Asking to pad but the tokenizer does not have a padding token ---
+    if tokenizer.pad_token is None:
+        tokenizer.pad_token = tokenizer.eos_token
+    # ----------------------------------------------------------------------------------
+
     inputs = tokenizer(prompts, padding=True, return_tensors="pt").to(device)
 
     model = llama.ModelForCausalLM.from_pretrained(model_path).to(device)
